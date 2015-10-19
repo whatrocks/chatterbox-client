@@ -36,7 +36,10 @@ var app = {
     });
   },
   clearMessages: function(){
-
+    $('#chats').empty();
+  },
+  addMessage: function(message){
+    $('#chats').append('<div class="message">' + message.username + ': ' + message.text + '</div>');
   }
 };
 
