@@ -77,13 +77,17 @@ var app = {
     $('#chats').empty();
   },
   addMessage: function(msgTxt){
+
+    var url = window.location.href;
+    var userIndex = url.indexOf("username")+9;
+    var user = url.slice(userIndex);
     
     var message = {
-      username: "NOTHING YET",
+      username: user,
       text: msgTxt,
       roomname: "Bathroom"
     };
-      this.send(message);
+    this.send(message);
   
   },
   addRoom: function(roomName){
