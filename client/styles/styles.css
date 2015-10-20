@@ -87,7 +87,7 @@ form input[type=text] {
     height: 100px;
     width: 100px;
 }
-.message {
+.chatterContainer {
     border: 1px solid grey;
     padding: 10px;
     margin-bottom: 4px;

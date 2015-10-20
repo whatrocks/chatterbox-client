@@ -126,8 +126,22 @@ var app = {
             var t = element.text || "The boys are back in town";
             var r = element.roomname || "Misguided Humans";
 
+            u = removeBadStuff(u);
+            t = removeBadStuff(t);
+            r = removeBadStuff(r);
+
             if ( r === app.activeRoom ){
-              $('#chats').append('<div class="message">' + removeBadStuff(u) + ': ' + removeBadStuff(t) + ' ['+ removeBadStuff(r) +']</div>');
+
+              var $chatter = $('<div/>', {'class': 'chatterContainer'});
+              
+              $chatter.append($('<div/>', {'class': 'chatterUserName', 'data-username': u, text: "@"+u}));
+              $chatter.append($('<div/>', {'class': 'chatterText', text: t}));
+              $chatter.append($('<div/>', {'class': 'chatterRoom', text: "["+r+"]"}));
+
+              $chatter.prependTo('#chats');
+
+
+              // $('#chats').append('<div class="message">' + removeBadStuff(u) + ': ' + removeBadStuff(t) + ' ['+ removeBadStuff(r) +']</div>');
             }
 
           });
