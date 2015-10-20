@@ -91,4 +91,10 @@ form input[type=text] {
     border: 1px solid grey;
     padding: 10px;
     margin-bottom: 4px;
+    background-color: #1E90FF;
+    font-size: 14px;
+    font-color: white;
+}
+.room-selector-dropdown {
+    width: 200px;
 }

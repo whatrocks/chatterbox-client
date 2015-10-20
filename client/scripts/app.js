@@ -1,40 +1,64 @@
 // YOUR CODE HERE:
-// var removeBadStuff = function(originalString) {
-//   var tempString = originalString.slice();
-//   var resultString = ""
+var removeBadStuff = function(originalString) {
+  
+  var tempString = originalString.slice();
+  var resultString = ""
 
-//   //escape out the bad characters
-//   for (var i = 0; i < tempString.length; i++){
-//     if (tempString.charAt(i) === "<" || tempString.charAt(i) === ">") {
-//       continue;
-//     } else {
-//       resultString = resultString + tempString.charAt(i);
-//     }
-//   }
-//   return resultString;
-// };
-
-var removeMoreBadStuff = function(str) {
-  if (str) {
-    return str.replace(/</, "");
+  //escape out the bad characters
+  for (var i = 0; i < tempString.length; i++){
+    if (tempString.charAt(i) === "<") {
+      resultString += '&lt;';
+    } else if (tempString.charAt(i) === ">") {
+      resultString += '&gt;';
+    } else if (tempString.charAt(i) === "&") {
+      resultString += '&amp;';
+    } else if (tempString.charAt(i) === '"') {
+      resultString += '&quot;';
+    } else if (tempString.charAt(i) === "'") {
+      resultString += '&#x27;';
+    } else if (tempString.charAt(i) === "/") {
+      resultString += '&#x2F;';
+    } else {
+      resultString = resultString + tempString.charAt(i);
+    }
   }
+  return resultString;
 };
+
+// var removeMoreBadStuff = function(str) 
+//   if (str) {
+//     return str.replace(/</, "");
+//   }
+// };
 
 
 $(document).ready( function() {
     $('.chatter-submit').on('click', function() {
       console.log("CHARLIE!!");
       var msgText = $(this).parent().find('.chatter-box').val();
-      console.log(msgText);
       app.addMessage(msgText);
     });
+
+    // $('.chatter-submit').submit(function() {
+    //   console.log("CHARLIE!!");
+    //   var msgText = $(this).parent().find('.chatter-box').val();
+    //   app.addMessage(msgText);
+    //   return false;
+    // });
+    $("select").change(function(){
+      var sel = $("select option:selected").text();
+      app.activeRoom = sel;
+      app.clearMessages();
+      app.fetch();
+    })
   });
 
 
 var app = {
-    rooms: {},
-    users: {},
-    buddies: {},
+  activeRoom: "lobby",
+  rooms: {},
+  users: {},
+  buddies: {},
   server: 'https://api.parse.com/1/classes/chatterbox/',
   init: function(){
 
@@ -48,8 +72,9 @@ var app = {
       success: function(data){
         _.each(data.results, function(element, index){
           
-          var roomName = removeMoreBadStuff(element.roomname);
-          app.rooms[roomName] = roomName !== 'undefined' ? roomName : 'Lost Humans';
+          var roomName = element.roomname || "Lost Humans";
+          roomName = removeBadStuff(roomName);
+          app.rooms[roomName] = roomName;
           
           // var userName = removeMoreBadStuff(element.username);
           // people[userName] = userName;
@@ -65,10 +90,7 @@ var app = {
         console.error("ERROR");
       }
     });
-
     app.fetch();
-
-
   },
   send: function(message){
 
@@ -87,21 +109,35 @@ var app = {
   },
   fetch: function(){
 
-    $.ajax({
-      url: app.server,
-      type: "GET",
-      dataType: "json",
-      contentType: 'application/json',
-      success: function(data) {
-        // console.log(data.results);
-        _.each(data.results, function(element, index){
-           $('#chats').append('<div class="message">' + removeMoreBadStuff(element.username) + ': ' + removeMoreBadStuff(element.text) + '</div>');
-        });
-      },
-      error: function(data) {
-        console.error("errorroror");
-      }
-    });
+    app.clearMessages();
+
+    setInterval(function(){
+      $.ajax({
+        url: app.server,
+        type: "GET",
+        dataType: "json",
+        contentType: 'application/json',
+        success: function(data) {
+          // console.log(data.results);
+
+          _.each(data.results, function(element, index){
+
+            var u = element.username || "Misguided Human";
+            var t = element.text || "The boys are back in town";
+            var r = element.roomname || "Misguided Humans";
+
+            if ( r === app.activeRoom ){
+              $('#chats').prepend('<div class="message">' + removeBadStuff(u) + ': ' + removeBadStuff(t) + ' ['+ removeBadStuff(r) +']</div>');
+            }
+
+          });
+        },
+        error: function(data) {
+          console.error("errorroror");
+        }
+      });
+    }, 1000);
+
   },
   clearMessages: function(){
     $('#chats').empty();
@@ -115,7 +151,7 @@ var app = {
     var message = {
       username: user,
       text: msgTxt,
-      roomname: "Bathroom"
+      roomname: app.activeRoom
     };
     this.send(message);
   
