@@ -1,15 +1,15 @@
 body {
-    background: #eee;
+    background: #fafafa;
     text-align: center;
     padding: 0 25px;
     font-family: arial, sans-serif;
 }
 
 #main, #chats {
-    width: 500px;
+    width: 960px;
     margin: auto;
-    text-align: left;
-    background: white;
+    text-align: center;
+    background: #fafafa;
     padding: 50px 60px;
     border: solid #ddd;
     border-width: 0 1px 1px 1px;
@@ -87,13 +87,13 @@ form input[type=text] {
     height: 100px;
     width: 100px;
 }
+
 .chatterContainer {
     border: 1px solid grey;
     padding: 10px;
     margin-bottom: 4px;
     background-color: #1E90FF;
-    font-size: 14px;
-    font-color: white;
+    font-size: 16px;
 }
 .room-selector-dropdown {
     width: 200px;
