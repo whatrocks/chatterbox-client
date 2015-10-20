@@ -109,9 +109,6 @@ var app = {
   },
   fetch: function(){
 
-    app.clearMessages();
-
-    setInterval(function(){
       $.ajax({
         url: app.server,
         type: "GET",
@@ -136,7 +133,7 @@ var app = {
           console.error("errorroror");
         }
       });
-    }, 1000);
+
 
   },
   clearMessages: function(){
