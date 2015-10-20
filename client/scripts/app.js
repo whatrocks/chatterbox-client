@@ -34,7 +34,6 @@ var removeBadStuff = function(originalString) {
 
 $(document).ready( function() {
     $('.chatter-submit').on('click', function() {
-      console.log("CHARLIE!!");
       var textbox = $(this).parent().find('.chatter-box')
       var msgText = textbox.val();
       textbox.val("Type it");
@@ -53,8 +52,26 @@ $(document).ready( function() {
       app.activeRoom = sel;
       app.clearMessages();
       app.fetch();
-    })
-  });
+    });
+
+    $('#chats').on('click', '.chatterUserName', function(){
+      app.addFriend();
+      var clickedUser = $(this).data('username');
+      app.buddies[clickedUser] = clickedUser;
+      console.log(app.buddies);
+      //console.log(clickedUser);
+      // console.log("SUP");
+    });
+
+    $('.room-create').on('click', function() {
+      var roomBox = $(this).parent().find('.room-add')
+      var rName = roomBox.val();
+      app.addRoom(rName);
+      app.init();
+      app.fetch();
+    });
+
+});
 
 
 var app = {
@@ -130,11 +147,19 @@ var app = {
             t = removeBadStuff(t);
             r = removeBadStuff(r);
 
+            var userClass;
+
+            if(app.buddies[u]){
+              userClass = 'chatterUserName buddy';
+            } else {
+              userClass = 'chatterUserName'
+            }
+
             if ( r === app.activeRoom ){
 
               var $chatter = $('<div/>', {'class': 'chatterContainer'});
               
-              $chatter.append($('<div/>', {'class': 'chatterUserName', 'data-username': u, text: "@"+u}));
+              $chatter.append($('<div/>', {'class': userClass, 'data-username': u, text: "@"+u}));
               $chatter.append($('<div/>', {'class': 'chatterText', text: t}));
               $chatter.append($('<div/>', {'class': 'chatterRoom', text: "["+r+"]"}));
 
@@ -156,23 +181,30 @@ var app = {
   clearMessages: function(){
     $('#chats').empty();
   },
-  addMessage: function(msgTxt){
+  addMessage: function(msgTxt, room){
 
     var url = window.location.href;
     var userIndex = url.indexOf("username")+9;
     var user = url.slice(userIndex);
     
+    msgTxt = msgTxt || user + " created new room!";
+    room = room || app.activeRoom;
+
     var message = {
       username: user,
       text: msgTxt,
-      roomname: app.activeRoom
+      roomname: room
     };
     this.send(message);
   
   },
   addRoom: function(roomName){
-
+    app.addMessage(undefined,roomName);
+    console.log("adding new room: ", roomName);
   },
+  addFriend: function() {
+
+  }
 };
 
 app.init();

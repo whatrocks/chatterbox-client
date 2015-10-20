@@ -98,3 +98,6 @@ form input[type=text] {
 .room-selector-dropdown {
     width: 200px;
 }
+.buddy {
+    font-weight: bold;
+}
