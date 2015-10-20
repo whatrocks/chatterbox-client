@@ -82,3 +82,13 @@ form input[type=text] {
 .spinner img {
     padding: 10px;
 }
+
+.hand {
+    height: 100px;
+    width: 100px;
+}
+.message {
+    border: 1px solid grey;
+    padding: 10px;
+    margin-bottom: 4px;
+}

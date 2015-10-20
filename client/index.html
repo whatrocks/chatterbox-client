@@ -4,6 +4,7 @@
     <meta charset="utf-8">
     <title>chatterbox</title>
     <link rel="stylesheet" href="styles/styles.css">
+    <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.css">
 
     <!-- dependencies -->
     <script src="bower_components/jquery/dist/jquery.js"></script>
@@ -15,7 +16,20 @@
   <body>
     <div id="main">
       <h1>chatterbox</h1>
+      <img class="hand" src="images/hand.jpg" />
       <!-- Your HTML goes here! -->
+      <h3> Room: </h3>
+<!--       <ul class="dropdown-menu" role="menu" aria-labeledby="dropdownMenu">
+        <li><a tabindex="-1" href="#">HEY</a></li>
+        <li><a tabindex="-1" href="#">Something else</a></li>
+
+      </ul> -->
+      <form class="room-selector" action="">
+        <select name="rooms" class="room-selector-dropdown">
+        </select>
+        <input class="room-submit" type="submit" value="Change Rooms">
+      </form>
+
       <h2>Say something:</h2>
       <form class="chatter-send" action="">
         <input class="chatter-box" type="text" name="message" placeholder="Type it">

@@ -31,13 +31,43 @@ $(document).ready( function() {
   });
 
 
-
-
-
-
 var app = {
-  server: 'https://api.parse.com/1/classes/chatterbox',
+    rooms: {},
+    users: {},
+    buddies: {},
+  server: 'https://api.parse.com/1/classes/chatterbox/',
   init: function(){
+
+    // Grab the rooms from the server
+    
+    $.ajax({
+      url: app.server,
+      type: "GET",
+      dataType: "json",
+      contentType: 'application/json',
+      success: function(data){
+        _.each(data.results, function(element, index){
+          
+          var roomName = removeMoreBadStuff(element.roomname);
+          app.rooms[roomName] = roomName !== 'undefined' ? roomName : 'Lost Humans';
+          
+          // var userName = removeMoreBadStuff(element.username);
+          // people[userName] = userName;
+        });
+
+        for (var room in app.rooms) {
+          // console.log("room:", room);
+          $(".room-selector-dropdown").append("<option value =" + room + ">" + room + "</option>");
+        }
+
+      },
+      error: function(data){
+        console.error("ERROR");
+      }
+    });
+
+    app.fetch();
+
 
   },
   send: function(message){
@@ -48,7 +78,6 @@ var app = {
       data: JSON.stringify(message),
       contentType: 'application/json',
       success: function(data){
-        console.log(data);
         console.log("chatterbox: message sent");
       },
       error: function(data){
@@ -64,6 +93,7 @@ var app = {
       dataType: "json",
       contentType: 'application/json',
       success: function(data) {
+        // console.log(data.results);
         _.each(data.results, function(element, index){
            $('#chats').append('<div class="message">' + removeMoreBadStuff(element.username) + ': ' + removeMoreBadStuff(element.text) + '</div>');
         });
@@ -95,4 +125,4 @@ var app = {
   },
 };
 
-app.fetch();
+app.init();
