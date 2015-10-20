@@ -1,13 +1,37 @@
-// // YOUR CODE HERE:
+// YOUR CODE HERE:
 // var removeBadStuff = function(originalString) {
-//   var cleanString = originalString.slice();
+//   var tempString = originalString.slice();
+//   var resultString = ""
 
 //   //escape out the bad characters
-//   for (var letter in cleanString; letter < cleanString.length; i++){
-//     if ()
+//   for (var i = 0; i < tempString.length; i++){
+//     if (tempString.charAt(i) === "<" || tempString.charAt(i) === ">") {
+//       continue;
+//     } else {
+//       resultString = resultString + tempString.charAt(i);
+//     }
 //   }
-//   return cleanString;
+//   return resultString;
 // };
+
+var removeMoreBadStuff = function(str) {
+  if (str) {
+    return str.replace(/</, "");
+  }
+};
+
+
+$(document).ready( function() {
+    $('.chatter-submit').on('click', function() {
+      console.log("CHARLIE!!");
+      var msgText = $(this).parent().find('.chatter-box').val();
+      console.log(msgText);
+      app.addMessage(msgText);
+    });
+  });
+
+
+
 
 
 
@@ -41,7 +65,7 @@ var app = {
       contentType: 'application/json',
       success: function(data) {
         _.each(data.results, function(element, index){
-           $('#chats').append('<div class="message">' + element.username + ': ' + element.text + '</div>');
+           $('#chats').append('<div class="message">' + removeMoreBadStuff(element.username) + ': ' + removeMoreBadStuff(element.text) + '</div>');
         });
       },
       error: function(data) {
@@ -52,16 +76,15 @@ var app = {
   clearMessages: function(){
     $('#chats').empty();
   },
-  addMessage: function(){
+  addMessage: function(msgTxt){
     
     var message = {
-      username: "<script>$('body').css({'background-image':'url(http://static1.squarespace.com/static/522a22cbe4b04681b0bff826/539f3bf4e4b06b36446b648e/560ace97e4b052356733cd74/1443564441105/?format=300w)'});</script>",
-      text: "Blah blabh blhab",
+      username: "NOTHING YET",
+      text: msgTxt,
       roomname: "Bathroom"
     };
-
-    this.send(message);
-    //$('#chats').append('<div class="message">' + message.username + ': ' + message.text + '</div>');
+      this.send(message);
+  
   },
   addRoom: function(roomName){
 
