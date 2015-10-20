@@ -35,8 +35,11 @@ var removeBadStuff = function(originalString) {
 $(document).ready( function() {
     $('.chatter-submit').on('click', function() {
       console.log("CHARLIE!!");
-      var msgText = $(this).parent().find('.chatter-box').val();
+      var textbox = $(this).parent().find('.chatter-box')
+      var msgText = textbox.val();
+      textbox.val("Type it");
       app.addMessage(msgText);
+      app.fetch();
     });
 
     // $('.chatter-submit').submit(function() {
@@ -124,7 +127,7 @@ var app = {
             var r = element.roomname || "Misguided Humans";
 
             if ( r === app.activeRoom ){
-              $('#chats').prepend('<div class="message">' + removeBadStuff(u) + ': ' + removeBadStuff(t) + ' ['+ removeBadStuff(r) +']</div>');
+              $('#chats').append('<div class="message">' + removeBadStuff(u) + ': ' + removeBadStuff(t) + ' ['+ removeBadStuff(r) +']</div>');
             }
 
           });
