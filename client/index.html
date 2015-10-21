@@ -59,15 +59,15 @@
       $(function(){
 
         // ------Backbone app----------------------
-        // var messages = new Messages();
-        // messages.loadMsgs();
-        // var formView = new FormView({ el: $('#main'), collection: messages});
-        // var messagesView = new MessagesView({ el: $('#chats'), collection: messages});
-        // // just tell the messages to fetch themselves
-        // setInterval( messages.loadMsgs.bind(messages), 1000);
+        var messages = new Messages();
+        messages.loadMsgs();
+        var formView = new FormView({ el: $('#main'), collection: messages});
+        var messagesView = new MessagesView({ el: $('#chats'), collection: messages});
+        // just tell the messages to fetch themselves
+        setInterval( messages.loadMsgs.bind(messages), 1000);
 
         // ------jQuery app----------------------
-        app.init();
+        // app.init();
 
       });
     </script>
