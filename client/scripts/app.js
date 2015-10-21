@@ -1,8 +1,92 @@
-// YOUR CODE HERE:
+//-----------------------------------------------
+// Backbone Implementation
+//-----------------------------------------------
+
+// Model object
+var Message = Backbone.Model.extend({
+
+  // can be used to specify default values for a model
+  defaults: {
+    username: 'Alexander Hamilton',
+    text: 'Im not throwin away my shot'
+  }
+
+});
+
+// Collection object - an ordered set of models
+var Messages = Backbone.Collection.extend({
+
+  // specify the model class that the collection contains
+  // by providing the class constructor function
+  model: Message,
+
+  // references the location of the collection on the server
+  // this is where to fetch the data
+  url: 'https://api.parse.com/1/classes/chatterbox/',
+
+  loadMsgs: function(){
+    this.fetch({data: {order: '-createdAt' }});
+  },
+
+  // called when results come back from server
+  // by default just returns results
+  parse: function(response, options){
+    return response.results;
+  }
+
+});
+
+// View object
+var MessageView = Backbone.View.extend({
+
+  // Use underbar templating to create a template
+  template: _.template('<div class="chat" data-id="<%- objectId %>"> \
+                        <div class="user"><%- username %></div> \
+                        <div class="text"><%- text %></div> \
+                        </div>'),
+
+  // renders an individual message
+  render: function(){
+    return this.template(this.model.attributes);
+  }
+
+});
+
+// View object
+var MessagesView = Backbone.View.extend({
+
+  initialize: function(){
+    this.collection.on('sync', this.render, this);
+  },
+
+  // append itself to the DOM
+  render: function(){
+    // must pass in context 'this' to ensure that 
+    // we pass correct 'this' binding to render message
+    this.collection.forEach(this.renderMessage, this);
+  },
+
+  renderMessage: function(message){
+    // backbone is pseudoclassical, so we need to instantiate
+    // we must pass in some model data representing
+    var messageView = new MessageView({model: message});
+    var $html = messageView.render();
+    $('#chats').prepend($html);
+  }
+
+
+});
+
+
+
+//-----------------------------------------------
+// jQuery Implementation
+//-----------------------------------------------
+
 var removeBadStuff = function(originalString) {
   
   var tempString = originalString.slice();
-  var resultString = ""
+  var resultString = "";
 
   //escape out the bad characters
   for (var i = 0; i < tempString.length; i++){
@@ -25,28 +109,15 @@ var removeBadStuff = function(originalString) {
   return resultString;
 };
 
-// var removeMoreBadStuff = function(str) 
-//   if (str) {
-//     return str.replace(/</, "");
-//   }
-// };
-
-
 $(document).ready( function() {
     $('.chatter-submit').on('click', function() {
-      var textbox = $(this).parent().find('.chatter-box')
+      var textbox = $(this).parent().find('.chatter-box');
       var msgText = textbox.val();
       textbox.val("Type it");
       app.addMessage(msgText);
       app.fetch();
     });
 
-    // $('.chatter-submit').submit(function() {
-    //   console.log("CHARLIE!!");
-    //   var msgText = $(this).parent().find('.chatter-box').val();
-    //   app.addMessage(msgText);
-    //   return false;
-    // });
     $("select").change(function(){
       var sel = $("select option:selected").text();
       app.activeRoom = sel;
@@ -59,12 +130,11 @@ $(document).ready( function() {
       var clickedUser = $(this).data('username');
       app.buddies[clickedUser] = clickedUser;
       console.log(app.buddies);
-      //console.log(clickedUser);
-      // console.log("SUP");
+
     });
 
     $('.room-create').on('click', function() {
-      var roomBox = $(this).parent().find('.room-add')
+      var roomBox = $(this).parent().find('.room-add');
       var rName = roomBox.val();
       app.addRoom(rName);
       app.init();
@@ -83,7 +153,6 @@ var app = {
   init: function(){
 
     // Grab the rooms from the server
-    
     $.ajax({
       url: app.server,
       type: "GET",
@@ -95,13 +164,9 @@ var app = {
           var roomName = element.roomname || "Lost Humans";
           roomName = removeBadStuff(roomName);
           app.rooms[roomName] = roomName;
-          
-          // var userName = removeMoreBadStuff(element.username);
-          // people[userName] = userName;
         });
 
         for (var room in app.rooms) {
-          // console.log("room:", room);
           $(".room-selector-dropdown").append("<option value =" + room + ">" + room + "</option>");
         }
 
@@ -135,7 +200,6 @@ var app = {
         dataType: "json",
         contentType: 'application/json',
         success: function(data) {
-          // console.log(data.results);
 
           _.each(data.results, function(element, index){
 
@@ -152,23 +216,17 @@ var app = {
             if(app.buddies[u]){
               userClass = 'chatterUserName buddy';
             } else {
-              userClass = 'chatterUserName'
+              userClass = 'chatterUserName';
             }
 
             if ( r === app.activeRoom ){
-
               var $chatter = $('<div/>', {'class': 'chatterContainer'});
-              
               $chatter.append($('<div/>', {'class': userClass, 'data-username': u, text: "@"+u}));
               $chatter.append($('<div/>', {'class': 'chatterText', text: t}));
               $chatter.append($('<div/>', {'class': 'chatterRoom', text: "["+r+"]"}));
 
               $chatter.prependTo('#chats');
-
-
-              // $('#chats').append('<div class="message">' + removeBadStuff(u) + ': ' + removeBadStuff(t) + ' ['+ removeBadStuff(r) +']</div>');
             }
-
           });
         },
         error: function(data) {
@@ -206,5 +264,3 @@ var app = {
 
   }
 };
-
-app.init();

@@ -4,11 +4,11 @@
     <meta charset="utf-8">
     <title>chatterbox</title>
     <link rel="stylesheet" href="styles/styles.css">
-    <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.css">
-
     <!-- dependencies -->
+    <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.css">
     <script src="bower_components/jquery/dist/jquery.js"></script>
     <script src="bower_components/underscore/underscore.js"></script>
+    <script src="bower_components/backbone/backbone.js"></script>
     <!-- your scripts -->
     <script src="env/config.js"></script>
     <script src="scripts/app.js"></script>
@@ -16,8 +16,10 @@
   <body>
     
     <div id="main">
-      <h1>Chatterbox</h1>
-      <img class="hand" src="images/hand.jpg" />
+      <div class="logo">
+        <img class="hand" src="images/hand.jpg" />
+        <h1>Chatterbox</h1>
+      </div>
       <!-- Your HTML goes here! -->
       <h3> Choose a Room: </h3>
       <form class="room-selector" action="">
@@ -27,12 +29,23 @@
         <input class="room-add" type="text" name="room" placeholder="Name your space">
         <button class="room-create btn btn-default" type="button"> Add a new room! </button>
 
-      <h2>Say something:</h2>
+      <h2>What's on your mind?</h2>
       <input class="chatter-box" type="text" name="message" placeholder="Type it">
-      <button class="chatter-submit btn btn-default" type="button"> Push It! </button>
+      <button class="chatter-submit btn btn-default" type="button"> Chat! </button>
     </div>
-
     <div id="chats"></div>
+    
+    <script>
+      $(function(){
+        // Backbone app
+        var messages = new Messages();
+        messages.loadMsgs();
+        var messagesView = new MessagesView({collection: messages});
+
+        // jQuery init
+        // app.init();
+      });
+    </script>
   
   </body>
 </html>

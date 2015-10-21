@@ -6,7 +6,7 @@ body {
 }
 
 #main, #chats {
-    width: 960px;
+    width: 600px;
     margin: auto;
     text-align: center;
     background: #fafafa;
@@ -81,6 +81,10 @@ form input[type=text] {
 
 .spinner img {
     padding: 10px;
+}
+
+.logo {
+    margin-bottom: 20px;
 }
 
 .hand {
