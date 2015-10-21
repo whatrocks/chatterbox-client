@@ -5,10 +5,12 @@
 // Model object
 var Message = Backbone.Model.extend({
 
+
+   url: 'https://api.parse.com/1/classes/chatterbox/',
   // can be used to specify default values for a model
   defaults: {
     username: 'Alexander Hamilton',
-    text: 'Im not throwin away my shot'
+    text: 'I\'m not throwin\' away my shot'
   }
 
 });
@@ -31,10 +33,61 @@ var Messages = Backbone.Collection.extend({
   // called when results come back from server
   // by default just returns results
   parse: function(response, options){
-    return response.results;
+    var results = [];
+    for ( var i = response.results.length - 1; i >= 0; i-- ){
+      results.push(response.results[i]);
+    }
+    return results;
   }
 
 });
+
+// View object
+var FormView = Backbone.View.extend({
+
+  initialize: function(){
+    this.collection.on('sync', this.stopSpinner, this);
+  },
+
+  events: {
+    'submit #send': 'handleSubmit'
+  },
+
+
+
+  handleSubmit: function(e){
+
+    e.preventDefault();
+
+    this.startSpinner();
+
+    var $text = this.$('#message');
+
+    this.collection.create({
+      username: window.location.search.substring(10),
+      text: $text.val()
+    });
+
+    $text.val('');
+
+    // These two lines can be replaced with the line below!
+    // var message = new Message(message);
+    // message.save();
+  },
+
+  startSpinner: function(){
+    this.$('.spinner img').show();
+    this.$('form input[type=submit]').attr('disabled', "true");
+  },
+
+  stopSpinner: function(){
+    this.$('.spinner img').fadeOut('fast');
+    this.$('form input[type=submit]').attr('disabled', null);
+  }
+
+
+});
+
 
 // View object
 var MessageView = Backbone.View.extend({
@@ -47,7 +100,8 @@ var MessageView = Backbone.View.extend({
 
   // renders an individual message
   render: function(){
-    return this.template(this.model.attributes);
+    this.$el.html(this.template(this.model.attributes));
+    return this.$el;
   }
 
 });
@@ -57,6 +111,7 @@ var MessagesView = Backbone.View.extend({
 
   initialize: function(){
     this.collection.on('sync', this.render, this);
+    this.onscreenMessages = {};
   },
 
   // append itself to the DOM
@@ -69,9 +124,16 @@ var MessagesView = Backbone.View.extend({
   renderMessage: function(message){
     // backbone is pseudoclassical, so we need to instantiate
     // we must pass in some model data representing
-    var messageView = new MessageView({model: message});
-    var $html = messageView.render();
-    $('#chats').prepend($html);
+
+    if (!this.onscreenMessages[message.get('objectId')]) {
+
+      var messageView = new MessageView({model: message});
+      this.$el.prepend(messageView.render());
+      this.onscreenMessages[message.get('objectId')] = true;
+    }
+
+
+
   }
 
 

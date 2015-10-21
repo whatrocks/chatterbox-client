@@ -16,23 +16,38 @@
   <body>
     
     <div id="main">
+      
       <div class="logo">
         <img class="hand" src="images/hand.jpg" />
         <h1>Chatterbox</h1>
       </div>
+
       <!-- Your HTML goes here! -->
       <h3> Choose a Room: </h3>
       <form class="room-selector" action="">
         <select name="rooms" class="room-selector-dropdown">
         </select>
       </form>
-        <input class="room-add" type="text" name="room" placeholder="Name your space">
-        <button class="room-create btn btn-default" type="button"> Add a new room! </button>
-
+      
+      <input class="room-add" type="text" name="room" placeholder="New room name">
+      <button class="room-create btn btn-default" type="button"> Add a new room! </button>
+      
+      <div class="spinner"><img src="images/spiffygif_46x46.gif"></div>
       <h2>What's on your mind?</h2>
-      <input class="chatter-box" type="text" name="message" placeholder="Type it">
-      <button class="chatter-submit btn btn-default" type="button"> Chat! </button>
+
+      <form action="#" id="send" method="post">  
+        <input type="text" name="message" id="message">
+        <input type="submit" name="submit" class="submit">
+      </form>
+
     </div>
+
+
+<!--       <input class="chatter-box" type="text" name="message" placeholder="Type it">
+      <button class="chatter-submit btn btn-default" type="button"> Chat! </button>
+ -->    
+
+
     <div id="chats"></div>
     
     <script>
@@ -40,7 +55,10 @@
         // Backbone app
         var messages = new Messages();
         messages.loadMsgs();
-        var messagesView = new MessagesView({collection: messages});
+        var formView = new FormView({ el: $('#main'), collection: messages});
+        var messagesView = new MessagesView({ el: $('#chats'), collection: messages});
+        // just tell the messages to fetch themselves
+        setInterval( messages.loadMsgs.bind(messages), 1000);
 
         // jQuery init
         // app.init();
